@@ -1,5 +1,7 @@
 """Foundations of Python - Part 3"""
 
+import math
+
 
 def nested_prime(n):
     """list comprehension to find all prime numbers upto n"""
@@ -90,49 +92,102 @@ def list_of_lists(input_list):
     unique_flatten(ans, input_list)
     return ans
 
+
 def set_complement(*args, verbose=False):
     """Complement of sets"""
     size = len(args)
-    ans = [[x for x in args[i] if x not in args[j]] for i in range(size) for j in range(size) if [x for x in args[i] if x not in args[j]]]
+    ans = [
+        [x for x in args[i] if x not in args[j]]
+        for i in range(size)
+        for j in range(size)
+        if [x for x in args[i] if x not in args[j]]
+    ]
     if verbose:
         ans += [args[i] for i in range(size)]
     return ans
 
+
 def set_intersection(*args, verbose=False):
     """Intersecting sets"""
     list1 = args[0]
-    list1 = [x for i in range(1,len(args)) for x in set(list1) if x in set(args[i])]
+    list1 = [x for i in range(1, len(args)) for x in set(list1) if x in set(args[i])]
     list1 = list(set(list1))
-    ans= [[x for x in set(args[i]) if x in set(args[j])] for i in range(len(args)-1) for j in range(i+1, len(args))]
+    ans = [
+        [x for x in set(args[i]) if x in set(args[j])]
+        for i in range(len(args) - 1)
+        for j in range(i + 1, len(args))
+    ]
     ans.append(list1)
     if verbose:
         ans += [args[i] for i in range(len(args))]
     return ans
 
+
 def dict_from_lists(list1, list2):
+    """function to return dictionary from two lists"""
     if len(list1) != len(list2):
         return {}
     ans = {list1[i]: list2[i] for i in range(len(list1))}
     return ans
 
-import math
-def my_secret(message):
-    message = message.replace(" ", "")
-    message = message.lower()
-    columns = math.ceil(len(message)**0.5)
+
+def my_secret(input_message):
+    """function to return secret message"""
+    message = input_message.replace(" ", "").lower()
+    columns = math.ceil(len(message) ** 0.5)
     grid = []
     i = 0
-    for _ in range(columns-1):
-        grid.append(message[i:i+columns])
+    for _ in range(columns - 1):
+        grid.append(message[i : i + columns])
         i += columns
-    
+
     secret_message = ""
-    for i in range(columns+1):
+    for i in range(columns + 1):
         for j in grid:
             if i < len(j):
                 secret_message += j[i]
         secret_message += " "
     return secret_message
+
+
+def all_combinations(alphabetic, num, combinations_list, current_str):
+    """function to find all the combination on a number"""
+    if not num:
+        combinations_list.append(current_str)
+        return []
+    all_combinations(
+        alphabetic, num[1:], combinations_list, current_str + alphabetic[int(num[0])][0]
+    )
+    all_combinations(
+        alphabetic, num[1:], combinations_list, current_str + alphabetic[int(num[0])][1]
+    )
+    all_combinations(
+        alphabetic, num[1:], combinations_list, current_str + alphabetic[int(num[0])][2]
+    )
+    return combinations_list
+
+
+def phone_words(*args):
+    """Create phone words"""
+    alphabetic = {
+        2: "ABC",
+        3: "DEF",
+        4: "GHI",
+        5: "JKL",
+        6: "MNO",
+        7: "PRS",
+        8: "TUV",
+        9: "WXY",
+    }
+    ans = {}
+    for i in args:
+        if "0" in str(i) or "1" in str(i):
+            ans[i] = []
+            continue
+        combinations = all_combinations(alphabetic, str(i), [], "")
+        ans[i] = combinations
+    return ans
+
 
 if __name__ == "__main__":
     print(nested_prime(23))
@@ -146,8 +201,8 @@ if __name__ == "__main__":
     ]
     print(dict_of_lists(data))
     print(list_of_lists(data))
-    print(set_complement([1,2,3,4],[1,3],[1,2,3]))
-    print(set_intersection([1,1,5,4,2,3,4],[1,5,1,3],[1,5,2,3]))
+    print(set_complement([1, 2, 3, 4], [1, 3], [1, 2, 3]))
+    print(set_intersection([1, 1, 5, 4, 2, 3, 4], [1, 5, 1, 3], [1, 5, 2, 3]))
     print(dict_from_lists([1, 2, 3], ["a", "b", "c"]))
-    message = "If man was meant to stay on the ground god would have given us roots"
-    print(my_secret(message))
+    print(my_secret("If man was meant to stay on the ground god would have given us roots"))
+    print(phone_words(1234567, 2345678))
