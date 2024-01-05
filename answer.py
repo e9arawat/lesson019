@@ -100,16 +100,39 @@ def set_complement(*args, verbose=False):
 
 def set_intersection(*args, verbose=False):
     """Intersecting sets"""
-    size = len(args)
     list1 = args[0]
-    list1 = [x for i in range(1,size) for x in set(list1) if x in set(args[i])]
+    list1 = [x for i in range(1,len(args)) for x in set(list1) if x in set(args[i])]
     list1 = list(set(list1))
-    ans= [[x for x in set(args[i]) if x in set(args[j])] for i in range(size-1) for j in range(i+1, size)]
+    ans= [[x for x in set(args[i]) if x in set(args[j])] for i in range(len(args)-1) for j in range(i+1, len(args))]
     ans.append(list1)
     if verbose:
-        ans += [args[i] for i in range(size)]
+        ans += [args[i] for i in range(len(args))]
     return ans
 
+def dict_from_lists(list1, list2):
+    if len(list1) != len(list2):
+        return {}
+    ans = {list1[i]: list2[i] for i in range(len(list1))}
+    return ans
+
+import math
+def my_secret(message):
+    message = message.replace(" ", "")
+    message = message.lower()
+    columns = math.ceil(len(message)**0.5)
+    grid = []
+    i = 0
+    for _ in range(columns-1):
+        grid.append(message[i:i+columns])
+        i += columns
+    
+    secret_message = ""
+    for i in range(columns+1):
+        for j in grid:
+            if i < len(j):
+                secret_message += j[i]
+        secret_message += " "
+    return secret_message
 
 if __name__ == "__main__":
     print(nested_prime(23))
@@ -125,3 +148,6 @@ if __name__ == "__main__":
     print(list_of_lists(data))
     print(set_complement([1,2,3,4],[1,3],[1,2,3]))
     print(set_intersection([1,1,5,4,2,3,4],[1,5,1,3],[1,5,2,3]))
+    print(dict_from_lists([1, 2, 3], ["a", "b", "c"]))
+    message = "If man was meant to stay on the ground god would have given us roots"
+    print(my_secret(message))
