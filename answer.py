@@ -123,7 +123,9 @@ def set_intersection(*args, verbose=False):
     return ans
 
 def dict_compare(*args):
+    """function to find identical combinations"""
     def compare_dicts(dict1, dict2):
+        """function to compare two dictionaries"""
         if isinstance(dict1, dict) and isinstance(dict2, dict):
             for x in dict1:
                 if x in dict2:
@@ -137,21 +139,23 @@ def dict_compare(*args):
         else:
             return dict1 == dict2
     
-    def find_identical_combinations(args_list, current_combination):
+    def find_identical_combinations(current_dict, args_list, current_combination):
+        """function to find one combination"""
         if len(args_list) == 0:
-            identical_combinations.append(current_combination.copy())
+            if current_combination not in identical_combinations:
+                identical_combinations.append(current_combination)
             return
         
-        current_dict, rest_of_dicts = args_list[0], args_list[1:]
-        
-        for i, dict in enumerate(rest_of_dicts):
+        for i, dict in enumerate(args_list):
             if compare_dicts(current_dict, dict):
-                find_identical_combinations([current_dict] + rest_of_dicts[:i] + rest_of_dicts[i+1:], current_combination + [dict])
+                current_combination.append(dict)
+            find_identical_combinations(current_dict, args_list[i+1:], current_combination)
         
-        find_identical_combinations(rest_of_dicts, current_combination + [current_dict])
     args_list = list(args)
+    print(args_list)
     identical_combinations = []
-    find_identical_combinations(args_list, [])
+    for index, current_dict in enumerate(args_list):
+        find_identical_combinations(current_dict, args_list[:index]+args_list[index+1:], [current_dict])
     return identical_combinations
         
 
