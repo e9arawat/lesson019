@@ -52,21 +52,21 @@ def fib_squares(a, b):
     return fib_squares_list
 
 
-def flatten(input_list):
-    """function to flatten a nested list"""
-    ans = []
-    for i in input_list:
-        if isinstance(i, dict):
-            continue
-        if isinstance(i, list):
-            ans += flatten(i)
-        else:
-            ans.append(i)
-    return ans
-
-
 def dict_of_lists(input_list):
     """Cataloging a list of lists"""
+
+    def flatten(input_list):
+        """function to flatten a nested list"""
+        ans = []
+        for i in input_list:
+            if isinstance(i, dict):
+                continue
+            if isinstance(i, list):
+                ans += flatten(i)
+            else:
+                ans.append(i)
+        return ans
+
     flatten_list = flatten(input_list)
     ans = {}
     for i in flatten_list:
@@ -75,19 +75,19 @@ def dict_of_lists(input_list):
     return ans
 
 
-def unique_flatten(ans, input_list):
-    """function to find uniques elements in a nested elements"""
-    for i in input_list:
-        if str(type(i)) == "<class 'dict'>":
-            continue
-        if str(type(i)) == "<class 'list'>":
-            unique_flatten(ans, i)
-        elif i not in ans:
-            ans.append(i)
-
-
 def list_of_lists(input_list):
     """Flattening a list of lists"""
+
+    def unique_flatten(ans, input_list):
+        """function to find uniques elements in a nested elements"""
+        for i in input_list:
+            if str(type(i)) == "<class 'dict'>":
+                continue
+            if str(type(i)) == "<class 'list'>":
+                unique_flatten(ans, i)
+            elif i not in ans:
+                ans.append(i)
+
     ans = []
     unique_flatten(ans, input_list)
     return ans
@@ -122,8 +122,10 @@ def set_intersection(*args, verbose=False):
         ans += [args[i] for i in range(len(args))]
     return ans
 
+
 def dict_compare(*args):
     """function to find identical combinations"""
+
     def compare_dicts(dict1, dict2):
         """function to compare two dictionaries"""
         if isinstance(dict1, dict) and isinstance(dict2, dict):
@@ -134,30 +136,33 @@ def dict_compare(*args):
                 else:
                     return False
             return True
-        elif isinstance(dict1, list) and isinstance(dict2, list):
+        if isinstance(dict1, list) and isinstance(dict2, list):
             return sorted(dict1) == sorted(dict2)
-        else:
-            return dict1 == dict2
-    
+        return dict1 == dict2
+
     def find_identical_combinations(current_dict, args_list, current_combination):
         """function to find one combination"""
         if len(args_list) == 0:
             if current_combination not in identical_combinations:
                 identical_combinations.append(current_combination)
             return
-        
-        for i, dict in enumerate(args_list):
-            if compare_dicts(current_dict, dict):
-                current_combination.append(dict)
-            find_identical_combinations(current_dict, args_list[i+1:], current_combination)
-        
+
+        for i, dic in enumerate(args_list):
+            if compare_dicts(current_dict, dic):
+                current_combination.append(dic)
+            find_identical_combinations(
+                current_dict, args_list[i + 1 :], current_combination
+            )
+
     args_list = list(args)
     print(args_list)
     identical_combinations = []
     for index, current_dict in enumerate(args_list):
-        find_identical_combinations(current_dict, args_list[:index]+args_list[index+1:], [current_dict])
+        find_identical_combinations(
+            current_dict, args_list[:index] + args_list[index + 1 :], [current_dict]
+        )
     return identical_combinations
-        
+
 
 def dict_from_lists(list1, list2):
     """function to return dictionary from two lists"""
@@ -239,7 +244,15 @@ if __name__ == "__main__":
     print(list_of_lists(data))
     print(set_complement([1, 2, 3, 4], [1, 3], [1, 2, 3]))
     print(set_intersection([1, 1, 5, 4, 2, 3, 4], [1, 5, 1, 3], [1, 5, 2, 3]))
-    print(dict_compare({'a': 1, 'b': [2, 3]},{'b': [3, 2], 'a': 1},{'c': 4, 'd': {'e': 5}}))
+    print(
+        dict_compare(
+            {"a": 1, "b": [2, 3]}, {"b": [3, 2], "a": 1}, {"c": 4, "d": {"e": 5}}
+        )
+    )
     print(dict_from_lists([1, 2, 3], ["a", "b", "c"]))
-    print(my_secret("If man was meant to stay on the ground god would have given us roots"))
+    print(
+        my_secret(
+            "If man was meant to stay on the ground god would have given us roots"
+        )
+    )
     print(phone_words(1234567, 2345678))
