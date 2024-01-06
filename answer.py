@@ -122,6 +122,38 @@ def set_intersection(*args, verbose=False):
         ans += [args[i] for i in range(len(args))]
     return ans
 
+def dict_compare(*args):
+    def compare_dicts(dict1, dict2):
+        if isinstance(dict1, dict) and isinstance(dict2, dict):
+            for x in dict1:
+                if x in dict2:
+                    if not compare_dicts(dict1[x], dict2[x]):
+                        return False
+                else:
+                    return False
+            return True
+        elif isinstance(dict1, list) and isinstance(dict2, list):
+            return sorted(dict1) == sorted(dict2)
+        else:
+            return dict1 == dict2
+    
+    def find_identical_combinations(args_list, current_combination):
+        if len(args_list) == 0:
+            identical_combinations.append(current_combination.copy())
+            return
+        
+        current_dict, rest_of_dicts = args_list[0], args_list[1:]
+        
+        for i, dict in enumerate(rest_of_dicts):
+            if compare_dicts(current_dict, dict):
+                find_identical_combinations([current_dict] + rest_of_dicts[:i] + rest_of_dicts[i+1:], current_combination + [dict])
+        
+        find_identical_combinations(rest_of_dicts, current_combination + [current_dict])
+    args_list = list(args)
+    identical_combinations = []
+    find_identical_combinations(args_list, [])
+    return identical_combinations
+        
 
 def dict_from_lists(list1, list2):
     """function to return dictionary from two lists"""
@@ -203,6 +235,7 @@ if __name__ == "__main__":
     print(list_of_lists(data))
     print(set_complement([1, 2, 3, 4], [1, 3], [1, 2, 3]))
     print(set_intersection([1, 1, 5, 4, 2, 3, 4], [1, 5, 1, 3], [1, 5, 2, 3]))
+    print(dict_compare({'a': 1, 'b': [2, 3]},{'b': [3, 2], 'a': 1},{'c': 4, 'd': {'e': 5}}))
     print(dict_from_lists([1, 2, 3], ["a", "b", "c"]))
     print(my_secret("If man was meant to stay on the ground god would have given us roots"))
     print(phone_words(1234567, 2345678))
